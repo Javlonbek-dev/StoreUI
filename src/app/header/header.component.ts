@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit {
   @ViewChild('modalTitel') modalTitle!:ElementRef;
   @ViewChild('container',{read:ViewContainerRef,static:true})
   container!:ViewContainerRef;
+  cartItems:number=0;
 
   navigationList: NavigationItem[] = [
   ];
@@ -40,6 +41,11 @@ export class HeaderComponent implements OnInit {
         }
       }
     });
+
+    this.utilityService.changeCart.subscribe((res:any)=>
+      {
+        this.cartItems+=parseInt(res)
+      });
 
    
   }
