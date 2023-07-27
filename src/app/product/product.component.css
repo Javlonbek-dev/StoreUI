@@ -24,11 +24,13 @@ img:hover{
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.list-view .title{
+.list-view .title,
+.cart-item-view .title{
     height: 50px;
     overflow: hidden;
 }
-.list-view .description{
+.list-view .description
+.cart-item-view .description{
     height: 75px;
     overflow: hidden;
     text-overflow: ellipsis;
