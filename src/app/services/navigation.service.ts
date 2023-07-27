@@ -79,4 +79,9 @@ export class NavigationService {
     let url= this.baseUrl+"InsertCartItem/"+ userid+'/'+productid;
     return this.http.post(url,null, {responseType:'text'})
   }
+
+  getActiveCartOfUser(userid:number){
+   let url = this.baseUrl+"GetActiveCartOfUser/"+userid
+   return this.http.get<any>(url)
+  }
 }
