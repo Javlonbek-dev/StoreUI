@@ -56,10 +56,38 @@ export interface CartItem{
     id:number;
     product:Product
 }
+
 export interface Cart{
     id:number;
     user:User;
-    cartItem:CartItem[];
+    cartItems:CartItem[];
     ordered:boolean
     orderedOn:string
+}
+
+export interface PaymentMethod{
+    id:number,
+    type:string,
+    provider:string,
+    available:boolean,
+    reason:string    
+}
+
+export interface Payment{
+    id:number,
+    user:User,
+    paymentMethod:PaymentMethod,
+    totalAmount:number,
+    shipingCharges:number,
+    amountReduced: number;
+    amountPaid:number,
+    createdAt:string
+}
+
+export interface Order{
+    id:number,
+    user:User,
+    cart:Cart,
+    payment:Payment,
+    createdAt:string
 }

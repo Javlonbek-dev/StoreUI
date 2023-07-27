@@ -42,10 +42,19 @@ export class HeaderComponent implements OnInit {
       }
     });
 
-    this.utilityService.changeCart.subscribe((res:any)=>
-      {
-        this.cartItems+=parseInt(res)
-      });
+
+    if (this.utilityService.isLoggedIn()) {
+      this.navigationService
+        .getActiveCartOfUser(this.utilityService.getUser().id)
+        .subscribe((res: any) => {
+          this.cartItems = res.cartItems.length;
+        });
+    }
+
+    this.utilityService.changeCart.subscribe((res: any) => {
+      if (parseInt(res) === 0) this.cartItems = 0;
+      else this.cartItems += parseInt(res);
+    });
 
    
   }
