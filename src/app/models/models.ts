@@ -51,3 +51,15 @@ export default interface Review{
     value: string;
     createdAt:string
 }
+
+export interface CartItem{
+    id:number;
+    product:Product
+}
+export interface Cart{
+    id:number;
+    user:User;
+    cartItem:CartItem[];
+    ordered:boolean
+    orderedOn:string
+}
