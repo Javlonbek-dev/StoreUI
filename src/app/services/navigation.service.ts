@@ -84,4 +84,9 @@ export class NavigationService {
    let url = this.baseUrl+"GetActiveCartOfUser/"+userid
    return this.http.get<any>(url)
   }
+
+  getAllPreviousCarts(userid:number){
+    let url=this.baseUrl+'GetAllPreviousCartsOfUser/'+userid
+    return this.http.get(url)
+  }
 }
