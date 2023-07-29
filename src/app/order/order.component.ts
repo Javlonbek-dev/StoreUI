@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Route, Router } from '@angular/router';
 import { timer } from 'rxjs';
-import { Cart, Payment, PaymentMethod } from '../models/models';
+import { Cart, Order, Payment, PaymentMethod } from '../models/models';
 import { NavigationService } from '../services/navigation.service';
 import { UtilityService } from '../services/utility.service';
 
@@ -20,6 +21,7 @@ export class OrderComponent implements OnInit {
   displaySpinner=false;
   message=''
   paymentMethods:PaymentMethod[]=[];
+  classname="";
   
   usersCart:Cart={
     id:1,
@@ -48,7 +50,8 @@ export class OrderComponent implements OnInit {
 
   constructor(
     private navigationService:NavigationService,
-    public utilityService:UtilityService){}
+    public utilityService:UtilityService,
+    private router:Router){}
 
 
   ngOnInit(): void {
@@ -83,12 +86,71 @@ export class OrderComponent implements OnInit {
     if(!isPaymentSuccessfull){
       this.displaySpinner=false
       this.message="Something went wrong! Payment did not happen"
+      this.classname="text-danger";
       return
     }
+    let step=0
+    let count = timer(0,3000).subscribe((res)=>{
+      ++step;
+      if(step===1){
+        this.message="Processing Payment"
+        this.classname="text-success"
+      }
+      if(step===2){
+        this.message="Paymeny successfull, Order is being placed"
+        this.storeOrder();
+      }
 
-    let count = timer(0,3000).subscribe((res)=>{})
+      if(step===3){
+        this.message="Your Order has been placed"
+        this.displaySpinner=false;
+      }
+      if(step===4){
+        this.router.navigateByUrl('/home')
+        count.unsubscribe();
+      }
+    })
   }
   payMoney(){
-    return false;
+    return true;
+  }
+  storeOrder(){
+    let payment:Payment
+    let pmid=0;
+    if(this.selectedPaymentMethod.value){
+      pmid=parseInt(this.selectedPaymentMethod.value)
+    }
+
+    payment = {
+      id: 0,
+      paymentMethod: {
+        id: pmid,
+        type: '',
+        provider: '',
+        available: false,
+        reason: '',
+      },
+      user: this.utilityService.getUser(),
+      totalAmount: this.usersPaymentInfo.totalAmount,
+      shipingCharges: this.usersPaymentInfo.shipingCharges,
+      amountReduced: this.usersPaymentInfo.amountReduced,
+      amountPaid: this.usersPaymentInfo.amountPaid,
+      createdAt: '',
+    };
+
+    this.navigationService.insertPayment(payment)
+    .subscribe((PaymentResponse:any)=>{
+      payment.id=parseInt(PaymentResponse)
+      let order: Order = {
+        id: 0,
+        user: this.utilityService.getUser(),
+        cart: this.usersCart,
+        payment: payment,
+        createdAt: '',
+      };
+      this.navigationService.insertOrder(order).subscribe((orderResponse)=>{
+        this.utilityService.changeCart.next(0);
+      })
+    })
   }
 }
