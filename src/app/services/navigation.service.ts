@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as rxjs from 'rxjs';
-import { Category, User } from '../models/models';
+import { Category, Order, Payment, PaymentMethod, User } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -89,4 +89,17 @@ export class NavigationService {
     let url=this.baseUrl+'GetAllPreviousCartsOfUser/'+userid
     return this.http.get(url)
   }
+
+  getPaymentMethods(){
+    let url= this.baseUrl+"GetPaymentMethods"
+    return this.http.get<PaymentMethod[]>(url);
+  }
+
+  insertPayment(payment:Payment){
+    return this.http.post(this.baseUrl+"InsertPayment",payment,{responseType:'text'}) 
+  }
+  insertOrder(order:Order){
+    return this.http.post(this.baseUrl+"InsertOrder",order)
+  }
 }
+
